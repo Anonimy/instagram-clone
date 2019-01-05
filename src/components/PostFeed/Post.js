@@ -81,7 +81,7 @@ export default class Post extends Component {
 						/>
 					</View>
 					<View>
-					<Icon
+						<Icon
 							name='ios-flag'
 							size={30}
 							style={[styles.icon, { marginRight: 0 }]}

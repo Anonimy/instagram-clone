@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { View } from 'react-native';
 import { createSwitchNavigator, createBottomTabNavigator, createMaterialTopTabNavigator } from 'react-navigation';
 import Icon from 'react-native-vector-icons/Ionicons';
 
@@ -12,7 +11,7 @@ const TopTabs = createMaterialTopTabNavigator({
 	initialRouteName: 'loginScreen'
 });
 
-const Tabs = createBottomTabNavigator({
+const BotTabs = createBottomTabNavigator({
 	camera: {
 		screen: Camera,
 		navigationOptions: {
@@ -47,7 +46,7 @@ const Tabs = createBottomTabNavigator({
 const MainStack = createSwitchNavigator({
 	authLoad: AuthLoadingScreen,
 	login: TopTabs,
-	mainFeed: Tabs
+	mainFeed: BotTabs
 }, {
 	initialRouteName: 'authLoad'
 });

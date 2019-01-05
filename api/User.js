@@ -94,14 +94,13 @@ function listPosts(userid) {
 	const user = getUserById(userid);
 	if (user !== null) {
 		const posts = Posts.list(user.follows);
-		return posts.map(post => {
-			return Object.assign(post, { user: getUserById(post.userid) });
-		});
+		return posts.map(post => Object.assign(post, { user: getUserById(post.userid) }));
 	}
 	return [];
 }
 
 export default {
+	getUserById,
 	login,
 	signup,
 	listPosts
