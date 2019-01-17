@@ -99,9 +99,18 @@ function listPosts(userid) {
 	return [];
 }
 
+function listOwnPosts(userid) {
+	const user = getUserById(userid);
+	if (user !== null) {
+		return Posts.list([ userid ]).map(post => Object.assign(post, { user }));
+	}
+	return [];
+}
+
 export default {
 	getUserById,
 	login,
 	signup,
-	listPosts
+	listPosts,
+	listOwnPosts
 }; 

@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
-import { AsyncStorage, Button, Image, Text, View } from 'react-native';
+import { AsyncStorage, ScrollView, View } from 'react-native';
 
-import ProfileHeader from '../../components/ProfileHeader';
+import { ProfileHeader, ProfileSummary } from '../../components/Profile';
+import PostFeed from '../../components/PostFeed';
+
 import User from '../../../api/User';
 
 export default class Profile extends Component {
@@ -40,39 +42,12 @@ export default class Profile extends Component {
 
 	render() {
 		return (
-			<View>
+			<View style={{ flex: 1 }}>
 				<ProfileHeader logout={this.logout} userName={this.state.user.username} />
-				<View style={{ flexDirection: 'row', height: 100, marginTop: 10, marginHorizontal: 10 }}>
-					<Image
-						source={{uri: this.state.user.userImage}}
-						style={{
-							borderRadius: 50,
-							height: 100,
-							width: 100
-						}}
-					/>
-					<View style={{ flex: 1, alignItems: 'center', justifyContent: 'space-around', marginLeft: 10 }}>
-						<View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
-							<View style={{ width: '33.3%', alignItems: 'center' }}>
-								<Text style={{ fontWeight: 'bold' }}>8</Text>
-								<Text>posts</Text>
-							</View>
-							<View style={{ width: '33.3%', alignItems: 'center' }}>
-								<Text style={{ fontWeight: 'bold' }}>279</Text>
-								<Text>followers</Text>
-							</View>
-							<View style={{ width: '33.3%', alignItems: 'center' }}>
-								<Text style={{ fontWeight: 'bold' }}>190</Text>
-								<Text>following</Text>
-							</View>
-						</View>
-						<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', width: '100%' }}>
-							<View style={{ width: '100%', borderColor: 'black', borderWidth: 1, height: '90%', justifyContent: 'center', alignItems: 'center', borderRadius: 10 }}>
-								<Text>Edit Profile</Text>
-							</View>
-						</View>
-					</View>
-				</View>
+				<ScrollView>
+					<ProfileSummary user={this.state.user} />
+					<PostFeed isOwn />
+				</ScrollView>
 			</View>
 		);
 	}

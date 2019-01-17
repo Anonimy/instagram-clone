@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
-import { Image, StyleSheet, Text, View, Dimensions, TouchableWithoutFeedback } from 'react-native';
+import { Animated, Easing, Image, ImageBackground, StyleSheet, Text, View, Dimensions, TouchableWithoutFeedback } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+
+const AnimatedIcon = Animated.createAnimatedComponent(Icon);
 
 export default class Post extends Component {
 	constructor(props) {
@@ -8,10 +10,29 @@ export default class Post extends Component {
 		this.imagesHeight = (Dimensions.get('window').width * 1.1) | 0;
 		this.state = {
 			like: false,
-			lastPostTap: 0
+			lastPostTap: 0,
+			likeAnim: new Animated.Value(0),
+			likeAnimDisplay: 'none'
 		};
 		this.likePostOnDoubleTap = this.likePostOnDoubleTap.bind(this);
 		this.likePost = this.likePost.bind(this);
+	}
+
+	startLikeAnimation = () => {
+		Animated.timing(this.state.likeAnim, {
+			toValue: 130,
+			duration: 300,
+			easing: Easing.elastic()
+		}).start(({ finished }) => {
+			if (finished) {
+				setTimeout(() => {
+					this.setState({
+						likeAnim: new Animated.Value(0),
+						likeAnimDisplay: 'none'
+					});
+				}, 200);
+			}
+		});
 	}
 
 	likePostOnDoubleTap() {
@@ -22,9 +43,12 @@ export default class Post extends Component {
 			lastPostTap: currentPostTap
 		};
 		if (diff < threshold) {
+			newStateObj.likeAnimDisplay = 'flex';
 			newStateObj.like = true;
 		}
-		this.setState(newStateObj);
+		this.setState(newStateObj, () => {
+			this.startLikeAnimation();
+		});
 	}
 
 	likePost() {
@@ -41,7 +65,7 @@ export default class Post extends Component {
 				<View style={styles.defaultBar}>
 					<View style={{flexDirection: 'row', alignItems: 'center'}}>
 						<Image
-							source={{uri: this.props.userInfo.userImage}}
+							source={{uri: this.props.userInfo.userImage || 'https://i.stack.imgur.com/4zFaC.png?s=328&g=1'}}
 							style={styles.userImage}
 						/>
 						<Text style={{fontWeight: 'bold'}}>{this.props.userInfo.username}</Text>
@@ -50,11 +74,18 @@ export default class Post extends Component {
 						<Text style={{fontSize: 25}}>...</Text>
 					</View>
 				</View>
-				<TouchableWithoutFeedback accessibilityTraits={['image', 'button']} onPress={this.likePostOnDoubleTap}>
-					<Image
+				<TouchableWithoutFeedback style={{flex: 1}} accessibilityTraits={['image', 'button']} onPress={this.likePostOnDoubleTap}>
+					<ImageBackground
 						source={{uri: this.props.url}}
 						style={{width: '100%', height: this.imagesHeight}}
-					/>
+					>
+						<View style={{flex: 1, justifyContent: 'center', alignItems: 'center', display: this.state.likeAnimDisplay}}>
+							<AnimatedIcon
+								name='ios-heart'
+								style={{color: '#f00', fontSize: this.state.likeAnim}}
+							/>
+						</View>
+					</ImageBackground>
 				</TouchableWithoutFeedback>
 				<View style={styles.defaultBar}>
 					<View style={{flexDirection: 'row'}}>

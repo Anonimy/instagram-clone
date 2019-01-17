@@ -12,17 +12,15 @@ export default class PostFeed extends Component {
 		};
 	}
 
-	componentDidMount() {
-		(async () => {
-			try {
-				const userid = Number(await AsyncStorage.getItem('USERID'));
-				this.setState({
-					feedPosts: User.listPosts(userid)
-				});
-			} catch(e) {
-				alert(e);
-			}
-		})();
+	async componentDidMount() {
+		try {
+			const userid = Number(await AsyncStorage.getItem('USERID'));
+			this.setState({
+				feedPosts: this.props.isOwn ? User.listOwnPosts(userid) : User.listPosts(userid)
+			});
+		} catch(e) {
+			alert(e);
+		}
 	}
 
 	render() {

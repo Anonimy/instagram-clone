@@ -4,7 +4,6 @@ import {
 	Button,
 	Keyboard,
 	StyleSheet,
-	Text,
 	TextInput,
 	TouchableWithoutFeedback,
 	View
@@ -28,40 +27,33 @@ export default class Login extends Component {
 		});
 	}
 
-	login() {
-		User.login({
-			username: this.state.username,
-			password: this.state.password
-		}).then(res => {
-			const { code, result } = res;
+	async login() {
+		try {
+			const { code, result } = await User.login({
+				username: this.state.username,
+				password: this.state.password
+			});
 			const userid = Object(result).session_id || 0;
 			if (Number(code) === 1 && userid > 0) {
-				(async () => {
-					try {
-						await AsyncStorage.setItem('USERID', String(userid), () => {
-							this.props.navigation.navigate('mainFeed');
-						});
-					} catch(e) {
-						alert(e);
-					}
-				})();
+				await AsyncStorage.setItem('USERID', String(userid));
+				this.props.navigation.navigate('mainFeed');
 			} else {
 				alert(result || 'Error');
 			}
-		}).catch(e => alert(e));
+		} catch(e) {
+			alert(e);
+		}
 	}
 
-	componentDidMount() {
-		(async () => {
-			try {
-				const userid = Number(await AsyncStorage.getItem('USERID'));
-				if (userid > 0) {
-					this.props.navigation.navigate('mainFeed');
-				}
-			} catch(e) {
-				alert(e);
+	async componentDidMount() {
+		try {
+			const userid = Number(await AsyncStorage.getItem('USERID'));
+			if (userid > 0) {
+				this.props.navigation.navigate('mainFeed');
 			}
-		})();
+		} catch(e) {
+			alert(e);
+		}
 	}
 
 	render() {
@@ -82,8 +74,9 @@ export default class Login extends Component {
 						style={styles.input}
 						placeholder='Password'
 						clearButtonMode='while-editing'
-						textContentType='password'
+						autoCorrect={false}
 						secureTextEntry
+						textContentType='password'
 						onChangeText={text => this.handleChangeText('password', text)}
 					/>
 					<Button title="LOGIN" onPress={this.login} />
